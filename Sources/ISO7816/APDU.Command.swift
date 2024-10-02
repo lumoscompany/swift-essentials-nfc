@@ -158,14 +158,8 @@ extension ISO7816.APDU.Command: ExpressibleByStringLiteral {
     }
 }
 
-#if IS_APPLE
-
-import Foundation.NSData
-
 extension ISO7816.APDU.Command {
     init?(_ contiguousBytes: any ContiguousBytes) {
         self.init(rawValue: contiguousBytes.concreteBytes)
     }
 }
-
-#endif

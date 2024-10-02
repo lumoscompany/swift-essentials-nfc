@@ -90,9 +90,9 @@ extension ISO7816.APDU.Coder {
 
 extension ISO7816.APDU.Coder {
     func decode(_ byteCollection: ByteCollection) throws (ISO7816.APDU.Error) -> Command {
-        let collection = ReadableByteCollection(byteCollection)
+        var byteCollection = ReadableByteCollection(byteCollection)
 
-        func _le(_ bytes: [UInt8]) throws (ISO7816.APDU.Error) -> Int? {
+        func _le(_ bytes: ByteCollection) throws (ISO7816.APDU.Error) -> Int? {
             switch bytes.count {
             case 0:
                 return nil
@@ -113,7 +113,7 @@ extension ISO7816.APDU.Coder {
             }
         }
 
-        let header = try? collection.read(4)
+        let header = try? byteCollection.read(4)
         guard let header
         else {
             throw ISO7816.APDU.Error.invalidHeader
@@ -122,14 +122,14 @@ extension ISO7816.APDU.Coder {
         let data: [UInt8]?
         let expectedResponseLength: Int?
 
-        let remainig = collection.rawValue
+        let remainig = byteCollection.rawValue
         switch remainig.count {
         case 0, 1,
              3 where remainig[0] == 0x0:
             data = nil
             expectedResponseLength = try _le(remainig)
         default:
-            let collection = ReadableByteCollection(remainig)
+            var collection = ReadableByteCollection(remainig)
             let dataLength: Int
 
             do {

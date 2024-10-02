@@ -26,8 +26,8 @@ public extension NDEFEncoder {
 
         public let options: EncodingOptions
 
-        public let type: ReadableByteCollection
-        public let id: ReadableByteCollection
-        public let payload: ReadableByteCollection
+        public var type: ReadableByteCollection
+        public var id: ReadableByteCollection
+        public var payload: ReadableByteCollection
     }
 }

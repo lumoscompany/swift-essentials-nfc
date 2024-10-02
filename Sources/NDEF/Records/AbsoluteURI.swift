@@ -2,6 +2,8 @@
 //  Created by Adam Stragner
 //
 
+import Essentials
+
 // MARK: - NDEF.AbsoluteURI
 
 public extension NDEF {
@@ -30,7 +32,7 @@ public extension NDEF {
         public let identifier: [UInt8]
         public let string: String
 
-        public func encode(to container: NDEFEncoder.Container) throws {
+        public func encode(to container: inout NDEFEncoder.Container) throws {
             container.id.append(contentsOf: identifier)
             container.type.append(contentsOf: [UInt8](string.utf8))
         }
@@ -39,14 +41,5 @@ public extension NDEF {
 
 public extension NDEF.AbsoluteURI {
     var value: String { string }
-}
-
-#if IS_APPLE
-
-import Foundation.NSURL
-
-public extension NDEF.AbsoluteURI {
     var url: URL? { URL(string: value) }
 }
-
-#endif

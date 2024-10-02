@@ -18,10 +18,13 @@ let package = Package(
         .library(name: "ISO7816", targets: ["ISO7816"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-log", .upToNextMajor(from: "1.6.1")),
+        .package(
+            url: "https://github.com/apple/swift-log",
+            .upToNextMajor(from: "1.6.1")
+        ),
         .package(
             url: "https://github.com/lumoscompany/swift-essentials",
-            .upToNextMajor(from: "0.0.7")
+            .upToNextMajor(from: "0.0.10")
         ),
     ],
     targets: [

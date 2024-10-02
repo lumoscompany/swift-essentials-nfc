@@ -18,8 +18,8 @@ public struct TLVDecoder {
 
     public var options: DecodingOptions
 
-    public func decode(from byteCollection: ByteCollection) throws -> [any TLVDecodble] {
-        let byteCollection = ReadableByteCollection(byteCollection)
+    public func decode(from contiguousBytes: any ContiguousBytes) throws -> [any TLVDecodble] {
+        var byteCollection = ReadableByteCollection(contiguousBytes)
         let availableDataTypes = options.availableDataTypes
 
         var result: [any TLVDecodble] = []
@@ -32,7 +32,7 @@ public struct TLVDecoder {
             }
 
             do {
-                let value = try _decode(decodableType, from: byteCollection)
+                let value = try _decode(decodableType, from: &byteCollection)
                 result.append(value)
 
                 if value is TLV.TERMINATOR, options.shouldRespectTeriminateTLV {
@@ -51,10 +51,10 @@ public struct TLVDecoder {
 
     public func decode<T>(
         _ type: T.Type,
-        from byteCollection: ByteCollection
+        from contiguousBytes: any ContiguousBytes
     ) throws -> T where T: TLVDecodble {
-        let byteCollection = ReadableByteCollection(byteCollection)
-        let value = try _decode(.init(type), from: byteCollection)
+        var byteCollection = ReadableByteCollection(contiguousBytes)
+        let value = try _decode(.init(type), from: &byteCollection)
 
         guard let value = value as? T
         else {
@@ -70,7 +70,7 @@ public struct TLVDecoder {
 
     private func _decode(
         _ type: DecodableType,
-        from byteCollection: ReadableByteCollection
+        from byteCollection: inout ReadableByteCollection
     ) throws -> any TLVDecodble {
         let firstByte = try byteCollection.read()
         guard type.dataType == firstByte
@@ -78,7 +78,7 @@ public struct TLVDecoder {
             throw TLVDecodingError.wrongType
         }
 
-        let length = try type.constrainedLength.decode(from: byteCollection)
+        let length = try type.constrainedLength.decode(from: &byteCollection)
         if let constrainedLength = type.constrainedLength?.constraint {
             try TLVDecodingError
                 .constrainedLengthInvalid
@@ -89,25 +89,6 @@ public struct TLVDecoder {
         return try type.decode(with: container)
     }
 }
-
-#if IS_APPLE
-
-import Foundation.NSData
-
-public extension TLVDecoder {
-    func decode(from contiguousBytes: any ContiguousBytes) throws -> [any TLVDecodble] {
-        try decode(from: contiguousBytes.concreteBytes)
-    }
-
-    func decode<T>(
-        _ type: T.Type,
-        from contiguousBytes: any ContiguousBytes
-    ) throws -> T where T: TLVDecodble {
-        try decode(type, from: contiguousBytes.concreteBytes)
-    }
-}
-
-#endif
 
 // MARK: Sendable
 

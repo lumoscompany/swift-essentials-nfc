@@ -16,6 +16,6 @@ public extension TLVEncoder {
         // MARK: Public
 
         public let options: EncodingOptions
-        public let storage: ReadableByteCollection
+        public var storage: ReadableByteCollection
     }
 }

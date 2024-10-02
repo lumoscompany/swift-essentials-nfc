@@ -11,7 +11,7 @@ public extension NDEF {
         // MARK: Lifecycle
 
         public init(
-            identifier: [UInt8] = [],
+            identifier: ByteCollection = [],
             encoding: Encoding = .utf8,
             language: String,
             string: String
@@ -23,12 +23,15 @@ public extension NDEF {
         }
 
         public init(with container: NDEFDecoder.Container) throws {
-            let bytes = container.payload
-            let flags = try Flags(rawValue: bytes.read())
+            var byteCollection = container.payload
 
-            let lang = try String(bytes: bytes.read(Int(flags.languageCodeLength)), encoding: .utf8)
-            let string = String(bytes: bytes.rawValue, encoding: flags.encoding._encoding)
+            let flags = try Flags(rawValue: byteCollection.read())
+            let lang = try String(
+                bytes: byteCollection.read(Int(flags.languageCodeLength)),
+                encoding: .utf8
+            )
 
+            let string = String(bytes: byteCollection.rawValue, encoding: flags.encoding._encoding)
             guard let lang, let string
             else {
                 throw NDEFDecodingError.dataCorrupted("Couldn't decode text message")
@@ -44,15 +47,15 @@ public extension NDEF {
 
         // MARK: Public
 
-        public static let dataType: [UInt8]? = [0x54]
+        public static let dataType: ByteCollection? = [0x54]
         public static let typeNameFormatConstraint: NDEF.TypeNameFormat = .wellknown
 
-        public let identifier: [UInt8]
+        public let identifier: ByteCollection
         public let encoding: Encoding
         public let language: String
         public let string: String
 
-        public func encode(to container: NDEFEncoder.Container) throws {
+        public func encode(to container: inout NDEFEncoder.Container) throws {
             var flags = Flags(rawValue: 0)
             switch encoding {
             case .utf8: flags[option: .isUTF16] = false

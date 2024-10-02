@@ -34,21 +34,21 @@ extension TLVConstrainedLength: Hashable {}
 extension TLVConstrainedLength: Sendable {}
 
 extension Optional where Wrapped == TLVConstrainedLength {
-    func decode(from byteCollection: ReadableByteCollection) throws -> Int {
+    func decode(from byteCollection: inout ReadableByteCollection) throws -> Int {
         switch self {
         case .none:
-            return try Int(UInt16(tlvEncodedLengthBytes: byteCollection))
+            return try Int(UInt16(tlvEncodedLengthBytes: &byteCollection))
         case let .some(wrapped):
             let length = wrapped.constraint
             return switch wrapped.type {
             case .ephemeral: Int(length)
-            case .ordinary: try Int(UInt16(tlvEncodedLengthBytes: byteCollection))
+            case .ordinary: try Int(UInt16(tlvEncodedLengthBytes: &byteCollection))
             }
         }
     }
 
     func encode(
-        to byteCollection: ReadableByteCollection,
+        to byteCollection: inout ReadableByteCollection,
         withActualLength actualLength: Int
     ) throws {
         try TLVEncodingError.invalidLength.throwif(actualLength > 0xFFFF)
@@ -71,7 +71,9 @@ extension Optional where Wrapped == TLVConstrainedLength {
 }
 
 private extension UInt16 {
-    init(tlvEncodedLengthBytes byteCollection: ReadableByteCollection) throws (BoundariesError) {
+    init(
+        tlvEncodedLengthBytes byteCollection: inout ReadableByteCollection
+    ) throws (BoundariesError) {
         let byte = try byteCollection.read()
         self = switch byte {
         case 0x00 ..< 0xFF: UInt16(byteCollection: [byte], .big)

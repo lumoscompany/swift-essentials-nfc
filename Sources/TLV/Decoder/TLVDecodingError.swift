@@ -2,18 +2,18 @@
 //  Created by Adam Stragner
 //
 
+import Essentials
+
 // MARK: - TLVDecodingError
 
-public enum TLVDecodingError {
+public enum TLVDecodingError: Error {
     case invalidLength
     case wrongType
     case constrainedLengthInvalid
     case dataCorrupted(String)
 }
 
-#if IS_APPLE
-
-import Foundation.NSError
+// MARK: LocalizedError
 
 extension TLVDecodingError: LocalizedError {
     public var errorDescription: String? {
@@ -25,5 +25,3 @@ extension TLVDecodingError: LocalizedError {
         }
     }
 }
-
-#endif

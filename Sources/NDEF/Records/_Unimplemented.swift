@@ -22,7 +22,7 @@ extension NDEF {
 
         let typeNameFormat: NDEF.TypeNameFormat
 
-        func encode(to container: NDEFEncoder.Container) throws {
+        func encode(to container: inout NDEFEncoder.Container) throws {
             container.id.append(contentsOf: id)
             container.type.append(contentsOf: type)
             container.payload.append(contentsOf: payload)

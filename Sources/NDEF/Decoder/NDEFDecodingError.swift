@@ -2,6 +2,8 @@
 //  Created by Adam Stragner
 //
 
+import Essentials
+
 // MARK: - NDEFDecodingError
 
 public enum NDEFDecodingError: Error {
@@ -10,9 +12,7 @@ public enum NDEFDecodingError: Error {
     case dataCorrupted(String)
 }
 
-#if IS_APPLE
-
-import Foundation.NSError
+// MARK: LocalizedError
 
 extension NDEFDecodingError: LocalizedError {
     public var errorDescription: String? {
@@ -23,5 +23,3 @@ extension NDEFDecodingError: LocalizedError {
         }
     }
 }
-
-#endif

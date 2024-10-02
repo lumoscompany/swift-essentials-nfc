@@ -2,7 +2,7 @@
 //  Created by Adam Stragner
 //
 
-public typealias NDEFCodable = NDEFDecodble & NDEFEncodable
+import Essentials
 
 // MARK: - NDEFDecodble
 
@@ -13,12 +13,14 @@ public protocol NDEFDecodble: _NDEFDataProtocol {
 // MARK: - NDEFEncodable
 
 public protocol NDEFEncodable: _NDEFDataProtocol {
-    func encode(to container: NDEFEncoder.Container) throws
+    func encode(to container: inout NDEFEncoder.Container) throws
 }
+
+public typealias NDEFCodable = NDEFDecodble & NDEFEncodable
 
 // MARK: - _NDEFDataProtocol
 
 public protocol _NDEFDataProtocol: Hashable, Sendable {
-    static var dataType: [UInt8]? { get }
+    static var dataType: ByteCollection? { get }
     static var typeNameFormatConstraint: NDEF.TypeNameFormat { get }
 }

@@ -20,7 +20,7 @@ public extension TLV {
         public static let dataType: UInt8 = 0x0
         public static let constrainedLength: TLVConstrainedLength? = .init(0, .ephemeral)
 
-        public func encode(to container: TLVEncoder.Container) throws {}
+        public func encode(to container: inout TLVEncoder.Container) throws {}
     }
 }
 
@@ -45,7 +45,7 @@ public extension TLV {
 
         public var bytes: [UInt8]
 
-        public func encode(to container: TLVEncoder.Container) throws {
+        public func encode(to container: inout TLVEncoder.Container) throws {
             container.storage.append(contentsOf: bytes)
         }
     }
@@ -72,7 +72,7 @@ public extension TLV {
 
         public var bytes: [UInt8]
 
-        public func encode(to container: TLVEncoder.Container) throws {
+        public func encode(to container: inout TLVEncoder.Container) throws {
             container.storage.append(contentsOf: bytes)
         }
     }
@@ -99,7 +99,7 @@ public extension TLV {
 
         public var bytes: [UInt8]
 
-        public func encode(to container: TLVEncoder.Container) throws {
+        public func encode(to container: inout TLVEncoder.Container) throws {
             container.storage.append(contentsOf: bytes)
         }
     }
@@ -126,7 +126,7 @@ public extension TLV {
 
         public var bytes: [UInt8]
 
-        public func encode(to container: TLVEncoder.Container) throws {
+        public func encode(to container: inout TLVEncoder.Container) throws {
             container.storage.append(contentsOf: bytes)
         }
     }
@@ -146,6 +146,6 @@ public extension TLV {
         public static let dataType: UInt8 = 0xFE
         public static let constrainedLength: TLVConstrainedLength? = .init(0, .ephemeral)
 
-        public func encode(to container: TLVEncoder.Container) throws {}
+        public func encode(to container: inout TLVEncoder.Container) throws {}
     }
 }

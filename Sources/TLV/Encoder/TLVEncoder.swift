@@ -18,17 +18,17 @@ public struct TLVEncoder {
     public let options: EncodingOptions
 
     public func encode(_ value: [any TLVEncodable]) throws -> ByteCollection {
-        let byteCollection = ReadableByteCollection()
+        var byteCollection = ReadableByteCollection()
         var index = 0
 
         try value.forEach({
-            try _encode($0, to: byteCollection)
+            try _encode($0, to: &byteCollection)
 
             if index == value.count - 1,
                options.isAppendingTerminateTLVIfNecessary,
                !($0 is TLV.TERMINATOR)
             {
-                try _encode(TLV.TERMINATOR(), to: byteCollection)
+                try _encode(TLV.TERMINATOR(), to: &byteCollection)
             }
 
             index += 1
@@ -38,8 +38,8 @@ public struct TLVEncoder {
     }
 
     public func encode<T>(_ value: T) throws -> ByteCollection where T: TLVEncodable {
-        let byteCollection = ReadableByteCollection()
-        try _encode(value, to: byteCollection)
+        var byteCollection = ReadableByteCollection()
+        try _encode(value, to: &byteCollection)
         return byteCollection.rawValue
     }
 
@@ -47,14 +47,14 @@ public struct TLVEncoder {
 
     private func _encode<T>(
         _ value: T,
-        to byteCollection: ReadableByteCollection
+        to byteCollection: inout ReadableByteCollection
     ) throws where T: TLVEncodable {
-        let container = Container(options: options, storage: .init())
-        try value.encode(to: container)
+        var container = Container(options: options, storage: .init())
+        try value.encode(to: &container)
         let bytes = container.storage.rawValue
 
         byteCollection.append(contentsOf: [T.dataType])
-        try T.constrainedLength.encode(to: byteCollection, withActualLength: bytes.count)
+        try T.constrainedLength.encode(to: &byteCollection, withActualLength: bytes.count)
 
         byteCollection.append(contentsOf: bytes)
     }

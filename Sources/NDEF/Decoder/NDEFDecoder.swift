@@ -20,21 +20,21 @@ public struct NDEFDecoder {
 
     public func decode(
         _ types: [DecodableType] = [],
-        from bytes: [UInt8]
+        from contiguousBytes: any ContiguousBytes
     ) throws -> [any NDEFDecodble] {
-        let storage = ReadableByteCollection(bytes)
+        var byteCollection = ReadableByteCollection(contiguousBytes)
         let availableDataTypes = options.availableDataTypes
 
         var result: [any NDEFDecodble] = []
-        while !storage.isEmpty {
+        while !byteCollection.isEmpty {
             do {
-                let header = try _header(from: storage)
+                let header = try _header(from: &byteCollection)
                 let decodableType = availableDataTypes.decodableType(
                     for: header.flags.typeNameFormat,
                     forType: header.type
                 )
 
-                try result.append(_decode(decodableType, with: header, from: storage))
+                try result.append(_decode(decodableType, with: header, from: &byteCollection))
                 if header.flags[option: .isMessageEnd] {
                     break
                 }
@@ -51,12 +51,12 @@ public struct NDEFDecoder {
 
     public func decode<T>(
         _ type: T.Type,
-        from bytes: [UInt8]
+        from contiguousBytes: any ContiguousBytes
     ) throws -> T where T: NDEFDecodble {
-        let storage = ReadableByteCollection(bytes)
+        var byteCollection = ReadableByteCollection(contiguousBytes)
 
-        let header = try _header(from: storage)
-        let value = try _decode(.init(type), with: header, from: storage)
+        let header = try _header(from: &byteCollection)
+        let value = try _decode(.init(type), with: header, from: &byteCollection)
 
         guard let value = value as? T
         else {
@@ -73,7 +73,7 @@ public struct NDEFDecoder {
     private func _decode(
         _ type: DecodableType,
         with header: Header,
-        from storage: ReadableByteCollection
+        from byteCollection: inout ReadableByteCollection
     ) throws -> any NDEFDecodble {
         if !type.isUnimplemented {
             try NDEFDecodingError
@@ -85,31 +85,30 @@ public struct NDEFDecoder {
             try NDEFDecodingError.wrongType.throwif(dataType != header.type)
         }
 
-        let bytes = try storage.read(header.payloadLength)
         return try type.decode(with: .init(
             options: options,
             typeNameFormat: header.flags.typeNameFormat,
             type: .init(header.type),
             id: .init(header.id),
-            payload: .init(bytes)
+            payload: .init(byteCollection.read(header.payloadLength))
         ))
     }
 
-    private func _header(from storage: ReadableByteCollection) throws -> Header {
-        let flags = try Header.Flags(rawValue: storage.read())
+    private func _header(from byteCollection: inout ReadableByteCollection) throws -> Header {
+        let flags = try Header.Flags(rawValue: byteCollection.read())
 
-        let typeLength = try Int(storage.read())
+        let typeLength = try Int(byteCollection.read())
         let payloadLength: Int
         let idLength: Int
 
         if flags[option: .isShortRecord] {
-            payloadLength = try Int(storage.read())
+            payloadLength = try Int(byteCollection.read())
         } else {
-            payloadLength = try Int(UInt32(byteCollection: storage.read(4), .big))
+            payloadLength = try Int(UInt32(byteCollection: byteCollection.read(4), .big))
         }
 
         if flags[option: .isIDLengthPresented] {
-            idLength = try Int(storage.read())
+            idLength = try Int(byteCollection.read())
         } else {
             idLength = 0
         }
@@ -118,8 +117,8 @@ public struct NDEFDecoder {
 
         return try .init(
             flags: flags,
-            type: storage.read(typeLength),
-            id: storage.read(idLength),
+            type: byteCollection.read(typeLength),
+            id: byteCollection.read(idLength),
             payloadLength: payloadLength
         )
     }
@@ -128,25 +127,3 @@ public struct NDEFDecoder {
 // MARK: Sendable
 
 extension NDEFDecoder: Sendable {}
-
-#if IS_APPLE
-
-import Foundation.NSData
-
-public extension NDEFDecoder {
-    func decode(
-        _ types: [DecodableType] = [],
-        from bytes: any ContiguousBytes
-    ) throws -> [any NDEFDecodble] {
-        try decode(types, from: bytes.concreteBytes)
-    }
-
-    func decode<T>(
-        _ type: T.Type,
-        from bytes: any ContiguousBytes
-    ) throws -> T where T: NDEFDecodble {
-        try decode(type, from: bytes.concreteBytes)
-    }
-}
-
-#endif

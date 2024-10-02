@@ -2,17 +2,17 @@
 //  Created by Adam Stragner
 //
 
+import Essentials
+
 // MARK: - TLVEncodingError
 
-public enum TLVEncodingError {
+public enum TLVEncodingError: Error {
     case invalidLength
     case constrainedLengthInvalid
     case dataCorrupted(String)
 }
 
-#if IS_APPLE
-
-import Foundation.NSError
+// MARK: LocalizedError
 
 extension TLVEncodingError: LocalizedError {
     public var errorDescription: String? {
@@ -23,5 +23,3 @@ extension TLVEncodingError: LocalizedError {
         }
     }
 }
-
-#endif

@@ -2,6 +2,8 @@
 //  Created by Adam Stragner
 //
 
+import Essentials
+
 // MARK: - NDEF.URI
 
 public extension NDEF {
@@ -14,9 +16,9 @@ public extension NDEF {
         }
 
         public init(with container: NDEFDecoder.Container) throws {
-            let storage = container.payload
-            guard let prefix = try NDEF.URI.prefixCodeWithIndex(storage.read()),
-                  let utf8 = String(bytes: storage.rawValue, encoding: .utf8)
+            var byteCollection = container.payload
+            guard let prefix = try NDEF.URI.prefixCodeWithIndex(byteCollection.read()),
+                  let utf8 = String(bytes: byteCollection.rawValue, encoding: .utf8)
             else {
                 throw NDEFDecodingError.dataCorrupted("Couldn't decode URI")
             }
@@ -31,7 +33,7 @@ public extension NDEF {
         public let identifier: [UInt8]
         public let string: String
 
-        public func encode(to container: NDEFEncoder.Container) throws {
+        public func encode(to container: inout NDEFEncoder.Container) throws {
             let info = NDEF.URI.prefixDataWithURL(string)
 
             container.id.append(contentsOf: identifier)
@@ -43,17 +45,8 @@ public extension NDEF {
 
 public extension NDEF.URI {
     var value: String { string }
-}
-
-#if IS_APPLE
-
-import Foundation.NSURL
-
-public extension NDEF.URI {
     var url: URL? { URL(string: value) }
 }
-
-#endif
 
 private extension NDEF.URI {
     private static let prefixes: [String] = [

@@ -2,6 +2,8 @@
 //  Created by Adam Stragner
 //
 
+import Essentials
+
 // MARK: - ISO7816.APDU.Error
 
 public extension ISO7816.APDU {
@@ -14,9 +16,7 @@ public extension ISO7816.APDU {
     }
 }
 
-#if IS_APPLE
-
-import Foundation.NSError
+// MARK: - ISO7816.APDU.Error + LocalizedError
 
 extension ISO7816.APDU.Error: LocalizedError {
     public var errorDescription: String? {
@@ -29,5 +29,3 @@ extension ISO7816.APDU.Error: LocalizedError {
         }
     }
 }
-
-#endif

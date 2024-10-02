@@ -13,7 +13,7 @@ public protocol TLVDecodble: _TLVDataProtocol {
 // MARK: - TLVEncodable
 
 public protocol TLVEncodable: _TLVDataProtocol {
-    func encode(to container: TLVEncoder.Container) throws
+    func encode(to container: inout TLVEncoder.Container) throws
 }
 
 // MARK: - _TLVDataProtocol

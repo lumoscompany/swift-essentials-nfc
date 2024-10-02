@@ -2,18 +2,16 @@
 //  Created by Adam Stragner
 //
 
+import Essentials
+
 // MARK: - TypeNameFormatError
 
 public struct TypeNameFormatError: Error {}
 
-#if IS_APPLE
-
-import Foundation.NSError
+// MARK: LocalizedError
 
 extension TypeNameFormatError: LocalizedError {
     public var errorDescription: String? {
         "TypeNameFormat (TNF) value must be not greater than 3 bits"
     }
 }
-
-#endif

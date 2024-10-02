@@ -16,11 +16,11 @@ public extension NDEF {
         public init(with container: NDEFDecoder.Container) throws {
             let storage = container.payload
             guard let prefix = try NDEF.URI.prefixCodeWithIndex(storage.read()),
-                  let utf8 = String(bytes: storage.value, encoding: .utf8)
+                  let utf8 = String(bytes: storage.rawValue, encoding: .utf8)
             else {
                 throw NDEFDecodingError.dataCorrupted("Couldn't decode URI")
             }
-            self.init(identifier: container.id.value, string: "\(prefix)\(utf8)")
+            self.init(identifier: container.id.rawValue, string: "\(prefix)\(utf8)")
         }
 
         // MARK: Public

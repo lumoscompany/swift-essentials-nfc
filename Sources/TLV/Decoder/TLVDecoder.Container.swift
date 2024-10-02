@@ -8,7 +8,7 @@ public extension TLVDecoder {
     struct Container {
         // MARK: Lifecycle
 
-        init(options: DecodingOptions, storage: ReadableBytesCollection) {
+        init(options: DecodingOptions, storage: ReadableByteCollection) {
             self.options = options
             self.storage = storage
         }
@@ -16,6 +16,6 @@ public extension TLVDecoder {
         // MARK: Public
 
         public let options: DecodingOptions
-        public let storage: ReadableBytesCollection
+        public let storage: ReadableByteCollection
     }
 }

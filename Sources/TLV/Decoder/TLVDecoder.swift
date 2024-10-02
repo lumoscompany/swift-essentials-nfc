@@ -18,27 +18,27 @@ public struct TLVDecoder {
 
     public var options: DecodingOptions
 
-    public func decode(from bytes: [UInt8]) throws -> [any TLVDecodble] {
-        let storage = ReadableBytesCollection(bytes)
+    public func decode(from byteCollection: ByteCollection) throws -> [any TLVDecodble] {
+        let byteCollection = ReadableByteCollection(byteCollection)
         let availableDataTypes = options.availableDataTypes
 
         var result: [any TLVDecodble] = []
-        while !storage.isEmpty {
-            guard let fisrtByte = try? storage.get(),
+        while !byteCollection.isEmpty {
+            guard let fisrtByte = try? byteCollection.get(),
                   let decodableType = availableDataTypes[fisrtByte]
             else {
-                let _ = try storage.read()
+                let _ = try byteCollection.read()
                 continue
             }
 
             do {
-                let value = try _decode(decodableType, from: storage)
+                let value = try _decode(decodableType, from: byteCollection)
                 result.append(value)
 
                 if value is TLV.TERMINATOR, options.shouldRespectTeriminateTLV {
-                    throw ReadableBytesCollection.BoundariesError()
+                    throw BoundariesError(0, in: [])
                 }
-            } catch is ReadableBytesCollection.BoundariesError {
+            } catch is BoundariesError {
                 log.warning("Unexpectedly stopped parsing data because of BoundariesError")
                 break
             } catch {
@@ -51,10 +51,10 @@ public struct TLVDecoder {
 
     public func decode<T>(
         _ type: T.Type,
-        from bytes: [UInt8]
+        from byteCollection: ByteCollection
     ) throws -> T where T: TLVDecodble {
-        let storage = ReadableBytesCollection(bytes)
-        let value = try _decode(.init(type), from: storage)
+        let byteCollection = ReadableByteCollection(byteCollection)
+        let value = try _decode(.init(type), from: byteCollection)
 
         guard let value = value as? T
         else {
@@ -70,22 +70,22 @@ public struct TLVDecoder {
 
     private func _decode(
         _ type: DecodableType,
-        from storage: ReadableBytesCollection
+        from byteCollection: ReadableByteCollection
     ) throws -> any TLVDecodble {
-        let firstByte = try storage.read()
+        let firstByte = try byteCollection.read()
         guard type.dataType == firstByte
         else {
             throw TLVDecodingError.wrongType
         }
 
-        let length = try type.constrainedLength.decode(from: storage)
+        let length = try type.constrainedLength.decode(from: byteCollection)
         if let constrainedLength = type.constrainedLength?.constraint {
             try TLVDecodingError
                 .constrainedLengthInvalid
                 .throwif(constrainedLength != length)
         }
 
-        let container = try Container(options: options, storage: .init(storage.read(length)))
+        let container = try Container(options: options, storage: .init(byteCollection.read(length)))
         return try type.decode(with: container)
     }
 }
@@ -95,15 +95,15 @@ public struct TLVDecoder {
 import Foundation.NSData
 
 public extension TLVDecoder {
-    func decode(from bytes: any ContiguousBytes) throws -> [any TLVDecodble] {
-        try decode(from: bytes.concreteBytes)
+    func decode(from contiguousBytes: any ContiguousBytes) throws -> [any TLVDecodble] {
+        try decode(from: contiguousBytes.concreteBytes)
     }
 
     func decode<T>(
         _ type: T.Type,
-        from bytes: any ContiguousBytes
+        from contiguousBytes: any ContiguousBytes
     ) throws -> T where T: TLVDecodble {
-        try decode(type, from: bytes.concreteBytes)
+        try decode(type, from: contiguousBytes.concreteBytes)
     }
 }
 

@@ -18,7 +18,7 @@ public struct NDEFEncoder {
     public let options: EncodingOptions
 
     public func encode(_ value: [any NDEFEncodable]) throws -> [UInt8] {
-        let storage = ReadableBytesCollection()
+        let storage = ReadableByteCollection()
 
         let range = 0 ..< value.count
         var index = 0
@@ -28,23 +28,23 @@ public struct NDEFEncoder {
             index += 1
         })
 
-        try NDEFEncodingError.messageTooLong.throwif(storage.value.count > UInt16.max)
-        return storage.value
+        try NDEFEncodingError.messageTooLong.throwif(storage.rawValue.count > UInt16.max)
+        return storage.rawValue
     }
 
     public func encode<T>(_ value: T) throws -> [UInt8] where T: NDEFEncodable {
-        let storage = ReadableBytesCollection()
+        let storage = ReadableByteCollection()
         try _encode(value, to: storage, withIndex: 0, in: 0 ..< 1)
 
-        try NDEFEncodingError.messageTooLong.throwif(storage.value.count > UInt16.max)
-        return storage.value
+        try NDEFEncodingError.messageTooLong.throwif(storage.rawValue.count > UInt16.max)
+        return storage.rawValue
     }
 
     // MARK: Private
 
     private func _encode<T>(
         _ value: T,
-        to storage: ReadableBytesCollection,
+        to storage: ReadableByteCollection,
         withIndex index: Int,
         in range: Range<Int>
     ) throws where T: NDEFEncodable {
@@ -57,8 +57,8 @@ public struct NDEFEncoder {
 
         try value.encode(to: container)
 
-        let dataType = container.type.value
-        let payload = container.payload.value
+        let dataType = container.type.rawValue
+        let payload = container.payload.rawValue
 
         if let _dataType = T.dataType {
             try NDEFEncodingError
@@ -72,7 +72,7 @@ public struct NDEFEncoder {
         }
 
         let header = try _header(
-            id: container.id.value,
+            id: container.id.rawValue,
             typeNameFormat: typeNameFormat,
             dataType: dataType,
             payload: payload,
@@ -116,7 +116,7 @@ public struct NDEFEncoder {
 
         let payloadLength = switch payload.count {
         case 0 ..< 0xFF: [UInt8(payload.count)]
-        case 0x0000_01FF ... 0xFFFF_FFFF: UInt32(payload.count).bytes(with: .big)
+        case 0x0000_01FF ... 0xFFFF_FFFF: UInt32(payload.count).byteCollection(with: .big)
         default: throw NDEFEncodingError.invalidPayload(payload.count)
         }
 

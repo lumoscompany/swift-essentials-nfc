@@ -15,11 +15,11 @@ public extension NDEF {
 
         public init(with container: NDEFDecoder.Container) throws {
             let type = container.type
-            guard let utf8 = String(bytes: type.value, encoding: .utf8)
+            guard let utf8 = String(bytes: type.rawValue, encoding: .utf8)
             else {
                 throw NDEFDecodingError.dataCorrupted("Couldn't decode AbsoluteURI")
             }
-            self.init(identifier: container.id.value, string: utf8)
+            self.init(identifier: container.id.rawValue, string: utf8)
         }
 
         // MARK: Public

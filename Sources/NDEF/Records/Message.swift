@@ -27,7 +27,7 @@ public extension NDEF {
             let flags = try Flags(rawValue: bytes.read())
 
             let lang = try String(bytes: bytes.read(Int(flags.languageCodeLength)), encoding: .utf8)
-            let string = String(bytes: bytes.value, encoding: flags.encoding._encoding)
+            let string = String(bytes: bytes.rawValue, encoding: flags.encoding._encoding)
 
             guard let lang, let string
             else {
@@ -35,7 +35,7 @@ public extension NDEF {
             }
 
             self.init(
-                identifier: container.id.value,
+                identifier: container.id.rawValue,
                 encoding: flags.encoding,
                 language: lang,
                 string: string
@@ -113,24 +113,22 @@ private extension NDEF.Message.Encoding {
 // MARK: - NDEF.Message.Flags
 
 private extension NDEF.Message {
-    struct Flags: OptionsByte, BitmaskByte {
+    struct Flags: OptionByte, BitmaskByte {
         // MARK: Lifecycle
 
         init(rawValue: UInt8) {
             self.rawValue = rawValue
-            self.languageCodeLength = rawValue & BitMaskKeys.languageCodeLength.rawValue
+            self.languageCodeLength = rawValue & BitmaskKeys.languageCodeLength.rawValue
         }
 
         // MARK: Public
 
-        public typealias OptionKeys = BitFlagKeys
-        public enum BitFlagKeys: UInt8, OptionsByteBitKey {
+        public enum OptionKeys: UInt8, OptionKey {
             case isUTF16 = 7 // 0b10000000
             case reserved = 6 // 0b01000000
         }
 
-        public typealias BitmaskKeys = BitMaskKeys
-        public enum BitMaskKeys: UInt8, BitmaskByteMaskKey {
+        public enum BitmaskKeys: UInt8, BitmaskKey {
             case languageCodeLength = 0b0011_1111
         }
 

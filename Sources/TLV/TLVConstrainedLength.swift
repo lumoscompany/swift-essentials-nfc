@@ -34,26 +34,29 @@ extension TLVConstrainedLength: Hashable {}
 extension TLVConstrainedLength: Sendable {}
 
 extension Optional where Wrapped == TLVConstrainedLength {
-    func decode(from storage: ReadableBytesCollection) throws -> Int {
+    func decode(from byteCollection: ReadableByteCollection) throws -> Int {
         switch self {
         case .none:
-            return try Int(UInt16(tlvEncodedLengthBytes: storage))
+            return try Int(UInt16(tlvEncodedLengthBytes: byteCollection))
         case let .some(wrapped):
             let length = wrapped.constraint
             return switch wrapped.type {
             case .ephemeral: Int(length)
-            case .ordinary: try Int(UInt16(tlvEncodedLengthBytes: storage))
+            case .ordinary: try Int(UInt16(tlvEncodedLengthBytes: byteCollection))
             }
         }
     }
 
-    func encode(to storage: ReadableBytesCollection, withActualLength actualLength: Int) throws {
+    func encode(
+        to byteCollection: ReadableByteCollection,
+        withActualLength actualLength: Int
+    ) throws {
         try TLVEncodingError.invalidLength.throwif(actualLength > 0xFFFF)
 
         let actualLength = UInt16(actualLength)
         switch self {
         case .none:
-            storage.append(contentsOf: actualLength.tlvEncodedLengthBytes)
+            byteCollection.append(contentsOf: actualLength.tlvEncodedLengthBytes)
         case let .some(wrapped):
             let length = wrapped.constraint
             switch wrapped.type {
@@ -61,18 +64,18 @@ extension Optional where Wrapped == TLVConstrainedLength {
                 try TLVEncodingError.constrainedLengthInvalid.throwif(length != actualLength)
             case .ordinary:
                 try TLVEncodingError.constrainedLengthInvalid.throwif(length != actualLength)
-                storage.append(contentsOf: actualLength.tlvEncodedLengthBytes)
+                byteCollection.append(contentsOf: actualLength.tlvEncodedLengthBytes)
             }
         }
     }
 }
 
 private extension UInt16 {
-    init(tlvEncodedLengthBytes bytes: ReadableBytesCollection) throws {
-        let byte = try bytes.read()
+    init(tlvEncodedLengthBytes byteCollection: ReadableByteCollection) throws (BoundariesError) {
+        let byte = try byteCollection.read()
         self = switch byte {
-        case 0x00 ..< 0xFF: UInt16(bytes: [byte], .big)
-        case 0xFF: try UInt16(bytes: bytes.read(2), .big)
+        case 0x00 ..< 0xFF: UInt16(byteCollection: [byte], .big)
+        case 0xFF: try UInt16(byteCollection: byteCollection.read(2), .big)
         default: fatalError("UInt16.tlvEncodedLengthBytes.init")
         }
     }
@@ -80,7 +83,7 @@ private extension UInt16 {
     var tlvEncodedLengthBytes: [UInt8] {
         switch self {
         case 0 ..< 0xFF: [UInt8(self)]
-        case 0xFF ..< 0xFFFF: [0xFF] + bytes(with: .big)
+        case 0xFF ..< 0xFFFF: [0xFF] + byteCollection(with: .big)
         default: fatalError("UInt16.tlvEncodedLengthBytes")
         }
     }

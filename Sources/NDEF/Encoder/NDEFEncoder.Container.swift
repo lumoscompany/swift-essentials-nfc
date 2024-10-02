@@ -2,7 +2,7 @@
 //  Created by Adam Stragner
 //
 
-import ReadableBytesCollection
+import ReadableByteCollection
 
 // MARK: - NDEFDecoder.DecodableType
 
@@ -12,9 +12,9 @@ public extension NDEFEncoder {
 
         public init(
             options: EncodingOptions,
-            type: ReadableBytesCollection,
-            id: ReadableBytesCollection,
-            payload: ReadableBytesCollection
+            type: ReadableByteCollection,
+            id: ReadableByteCollection,
+            payload: ReadableByteCollection
         ) {
             self.options = options
             self.type = type
@@ -26,8 +26,8 @@ public extension NDEFEncoder {
 
         public let options: EncodingOptions
 
-        public let type: ReadableBytesCollection
-        public let id: ReadableBytesCollection
-        public let payload: ReadableBytesCollection
+        public let type: ReadableByteCollection
+        public let id: ReadableByteCollection
+        public let payload: ReadableByteCollection
     }
 }

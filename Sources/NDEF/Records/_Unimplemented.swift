@@ -10,9 +10,9 @@ extension NDEF {
 
         init(with container: NDEFDecoder.Container) throws {
             self.typeNameFormat = container.typeNameFormat
-            self.type = container.type.value
-            self.id = container.id.value
-            self.payload = container.payload.value
+            self.type = container.type.rawValue
+            self.id = container.id.rawValue
+            self.payload = container.payload.rawValue
         }
 
         // MARK: Internal

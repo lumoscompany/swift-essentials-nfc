@@ -2,6 +2,7 @@
 //  Created by Adam Stragner
 //
 
+@_exported import ISO7816
 @_exported import TLV
 @_exported import NDEF
 

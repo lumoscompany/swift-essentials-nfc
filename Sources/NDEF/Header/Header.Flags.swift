@@ -7,12 +7,12 @@ import Essentials
 // MARK: - Header.Flags
 
 extension Header {
-    struct Flags: OptionsByte, BitmaskByte {
+    struct Flags: OptionByte, BitmaskByte {
         // MARK: Lifecycle
 
         init(rawValue: UInt8) throws {
             let typeNameFormat = NDEF.TypeNameFormat(
-                rawValue: rawValue & BitMaskKeys.typeNameFormat.rawValue
+                rawValue: rawValue & BitmaskKeys.typeNameFormat.rawValue
             )
 
             guard let typeNameFormat
@@ -26,9 +26,6 @@ extension Header {
 
         // MARK: Internal
 
-        typealias OptionKeys = BitFlagKeys
-        typealias BitmaskKeys = BitMaskKeys
-
         var rawValue: UInt8
 
         var typeNameFormat: NDEF.TypeNameFormat {
@@ -40,7 +37,7 @@ extension Header {
 // MARK: - Header.Flags.BitFlagKeys
 
 extension Header.Flags {
-    enum BitFlagKeys: UInt8, OptionsByteBitKey {
+    enum OptionKeys: UInt8, OptionKey {
         /// The `MB` flag is a 1-bit field that when set indicates the start of an NDEF message
         case isMessageBegin = 7 // 0b10000000
 
@@ -64,7 +61,7 @@ extension Header.Flags {
 // MARK: - Header.Flags.BitMaskKeys
 
 extension Header.Flags {
-    enum BitMaskKeys: UInt8, BitmaskByteMaskKey {
+    enum BitmaskKeys: UInt8, BitmaskKey {
         case typeNameFormat = 0b0000_0111
     }
 }

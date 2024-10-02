@@ -2,7 +2,7 @@
 //  Created by Adam Stragner
 //
 
-import Essentials
+import ReadableByteCollection
 
 // MARK: - NDEFDecoder.Container
 
@@ -13,9 +13,9 @@ public extension NDEFDecoder {
         public init(
             options: DecodingOptions,
             typeNameFormat: NDEF.TypeNameFormat,
-            type: ReadableBytesCollection,
-            id: ReadableBytesCollection,
-            payload: ReadableBytesCollection
+            type: ReadableByteCollection,
+            id: ReadableByteCollection,
+            payload: ReadableByteCollection
         ) {
             self.options = options
             self.typeNameFormat = typeNameFormat
@@ -30,9 +30,9 @@ public extension NDEFDecoder {
 
         public let typeNameFormat: NDEF.TypeNameFormat
 
-        public let type: ReadableBytesCollection
-        public let id: ReadableBytesCollection
-        public let payload: ReadableBytesCollection
+        public let type: ReadableByteCollection
+        public let id: ReadableByteCollection
+        public let payload: ReadableByteCollection
     }
 }
 

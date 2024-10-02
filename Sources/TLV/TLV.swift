@@ -35,7 +35,7 @@ public extension TLV {
         }
 
         public init(with container: TLVDecoder.Container) throws {
-            self.init(bytes: container.storage.value)
+            self.init(bytes: container.storage.rawValue)
         }
 
         // MARK: Public
@@ -62,7 +62,7 @@ public extension TLV {
         }
 
         public init(with container: TLVDecoder.Container) throws {
-            self.init(bytes: container.storage.value)
+            self.init(bytes: container.storage.rawValue)
         }
 
         // MARK: Public
@@ -89,7 +89,7 @@ public extension TLV {
         }
 
         public init(with container: TLVDecoder.Container) throws {
-            self.init(bytes: container.storage.value)
+            self.init(bytes: container.storage.rawValue)
         }
 
         // MARK: Public
@@ -116,7 +116,7 @@ public extension TLV {
         }
 
         public init(with container: TLVDecoder.Container) throws {
-            self.init(bytes: container.storage.value)
+            self.init(bytes: container.storage.rawValue)
         }
 
         // MARK: Public

@@ -8,7 +8,7 @@ public extension TLVEncoder {
     struct Container {
         // MARK: Lifecycle
 
-        init(options: EncodingOptions, storage: ReadableBytesCollection) {
+        init(options: EncodingOptions, storage: ReadableByteCollection) {
             self.options = options
             self.storage = storage
         }
@@ -16,6 +16,6 @@ public extension TLVEncoder {
         // MARK: Public
 
         public let options: EncodingOptions
-        public let storage: ReadableBytesCollection
+        public let storage: ReadableByteCollection
     }
 }

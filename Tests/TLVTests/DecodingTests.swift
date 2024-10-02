@@ -2,7 +2,6 @@
 //  Created by Adam Stragner
 //
 
-import Foundation
 import XCTest
 
 @testable import TLV

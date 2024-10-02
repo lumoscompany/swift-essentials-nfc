@@ -2,7 +2,6 @@
 //  Created by Adam Stragner
 //
 
-import Foundation
 import XCTest
 import TLV
 import Essentials
@@ -74,18 +73,17 @@ final class EncodingTests: XCTestCase {
     ]
 
     private func updateMFME(in bytes: inout [UInt8], mf: Bool, me: Bool) {
-        struct MFME: OptionsByte {
-            internal init(_ rawValue: UInt8) {
+        struct MFME: OptionByte {
+            init(_ rawValue: UInt8) {
                 self.rawValue = rawValue
             }
 
-            typealias OptionKeys = BitFlagKeys
-            enum BitFlagKeys: UInt8, OptionsByteBitKey {
+            enum OptionKeys: UInt8, OptionKey {
                 case mf = 7 // 0b10000000
                 case me = 6 // 0b01000000
             }
 
-            internal var rawValue: UInt8
+            var rawValue: UInt8
         }
 
         var mfme = MFME(bytes[0])

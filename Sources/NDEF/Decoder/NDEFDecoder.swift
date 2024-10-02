@@ -22,7 +22,7 @@ public struct NDEFDecoder {
         _ types: [DecodableType] = [],
         from bytes: [UInt8]
     ) throws -> [any NDEFDecodble] {
-        let storage = ReadableBytesCollection(bytes)
+        let storage = ReadableByteCollection(bytes)
         let availableDataTypes = options.availableDataTypes
 
         var result: [any NDEFDecodble] = []
@@ -38,7 +38,7 @@ public struct NDEFDecoder {
                 if header.flags[option: .isMessageEnd] {
                     break
                 }
-            } catch is ReadableBytesCollection.BoundariesError {
+            } catch is BoundariesError {
                 log.warning("Unexpectedly stopped parsing data because of BoundariesError")
                 break
             } catch {
@@ -53,7 +53,7 @@ public struct NDEFDecoder {
         _ type: T.Type,
         from bytes: [UInt8]
     ) throws -> T where T: NDEFDecodble {
-        let storage = ReadableBytesCollection(bytes)
+        let storage = ReadableByteCollection(bytes)
 
         let header = try _header(from: storage)
         let value = try _decode(.init(type), with: header, from: storage)
@@ -73,7 +73,7 @@ public struct NDEFDecoder {
     private func _decode(
         _ type: DecodableType,
         with header: Header,
-        from storage: ReadableBytesCollection
+        from storage: ReadableByteCollection
     ) throws -> any NDEFDecodble {
         if !type.isUnimplemented {
             try NDEFDecodingError
@@ -95,7 +95,7 @@ public struct NDEFDecoder {
         ))
     }
 
-    private func _header(from storage: ReadableBytesCollection) throws -> Header {
+    private func _header(from storage: ReadableByteCollection) throws -> Header {
         let flags = try Header.Flags(rawValue: storage.read())
 
         let typeLength = try Int(storage.read())
@@ -105,7 +105,7 @@ public struct NDEFDecoder {
         if flags[option: .isShortRecord] {
             payloadLength = try Int(storage.read())
         } else {
-            payloadLength = try Int(UInt32(bytes: storage.read(4), .big))
+            payloadLength = try Int(UInt32(byteCollection: storage.read(4), .big))
         }
 
         if flags[option: .isIDLengthPresented] {

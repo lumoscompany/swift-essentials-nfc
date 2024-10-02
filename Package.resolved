@@ -1,13 +1,13 @@
 {
-  "originHash" : "88ecaed2ee6333a20c24349b539c7fa40bbef9c15593269fa5e49a95d9f7dc2e",
+  "originHash" : "64eacf806112644c7020beb25218bf3d5b4cef3239645415ea5e999d1598a545",
   "pins" : [
     {
       "identity" : "swift-essentials",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/lumoscompany/swift-essentials",
       "state" : {
-        "revision" : "1c6b7ee4543e5b2aadb47d4b68f85cc93f81fbf3",
-        "version" : "0.0.3"
+        "revision" : "be5b8097426a4f7607f61d2494a84019bf26e43e",
+        "version" : "0.0.7"
       }
     },
     {

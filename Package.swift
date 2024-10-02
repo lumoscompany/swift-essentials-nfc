@@ -15,12 +15,13 @@ let package = Package(
         .library(name: "EssentialsNFC", targets: ["EssentialsNFC"]),
         .library(name: "NDEF", targets: ["NDEF"]),
         .library(name: "TLV", targets: ["TLV"]),
+        .library(name: "ISO7816", targets: ["ISO7816"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-log", .upToNextMajor(from: "1.6.1")),
         .package(
             url: "https://github.com/lumoscompany/swift-essentials",
-            .upToNextMajor(from: "0.0.3")
+            .upToNextMajor(from: "0.0.7")
         ),
     ],
     targets: [
@@ -29,6 +30,7 @@ let package = Package(
             dependencies: [
                 "TLV",
                 "NDEF",
+                "ISO7816",
             ],
             path: "Sources/EssentialsNFC",
             swiftSettings: [IS_APPLE]
@@ -49,6 +51,14 @@ let package = Package(
                 .product(name: "Logging", package: "swift-log"),
             ],
             path: "Sources/NDEF",
+            swiftSettings: [IS_APPLE]
+        ),
+        .target(
+            name: "ISO7816",
+            dependencies: [
+                .product(name: "Essentials", package: "swift-essentials"),
+            ],
+            path: "Sources/ISO7816",
             swiftSettings: [IS_APPLE]
         ),
         .testTarget(

@@ -15,9 +15,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "TLV"
-               BuildableName = "TLV"
-               BlueprintName = "TLV"
+               BlueprintIdentifier = "ISO7816"
+               BuildableName = "ISO7816"
+               BlueprintName = "ISO7816"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -29,18 +29,6 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
       shouldAutocreateTestPlan = "YES">
-      <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "TLVTests"
-               BuildableName = "TLVTests"
-               BlueprintName = "TLVTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </TestableReference>
-      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -62,9 +50,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "TLV"
-            BuildableName = "TLV"
-            BlueprintName = "TLV"
+            BlueprintIdentifier = "ISO7816"
+            BuildableName = "ISO7816"
+            BlueprintName = "ISO7816"
             ReferencedContainer = "container:">
          </BuildableReference>
       </MacroExpansion>

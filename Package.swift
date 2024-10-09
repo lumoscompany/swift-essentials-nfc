@@ -3,8 +3,6 @@
 
 import PackageDescription
 
-let IS_APPLE: SwiftSetting = .define("IS_APPLE", .when(platforms: [.macOS, .iOS]))
-
 let package = Package(
     name: "swift-essentials-nfc",
     platforms: [
@@ -24,7 +22,7 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/lumoscompany/swift-essentials",
-            .upToNextMajor(from: "0.0.10")
+            .upToNextMajor(from: "0.0.18")
         ),
     ],
     targets: [
@@ -35,8 +33,7 @@ let package = Package(
                 "NDEF",
                 "ISO7816",
             ],
-            path: "Sources/EssentialsNFC",
-            swiftSettings: [IS_APPLE]
+            path: "Sources/EssentialsNFC"
         ),
         .target(
             name: "TLV",
@@ -44,8 +41,7 @@ let package = Package(
                 .product(name: "Essentials", package: "swift-essentials"),
                 .product(name: "Logging", package: "swift-log"),
             ],
-            path: "Sources/TLV",
-            swiftSettings: [IS_APPLE]
+            path: "Sources/TLV"
         ),
         .target(
             name: "NDEF",
@@ -53,16 +49,14 @@ let package = Package(
                 .product(name: "Essentials", package: "swift-essentials"),
                 .product(name: "Logging", package: "swift-log"),
             ],
-            path: "Sources/NDEF",
-            swiftSettings: [IS_APPLE]
+            path: "Sources/NDEF"
         ),
         .target(
             name: "ISO7816",
             dependencies: [
                 .product(name: "Essentials", package: "swift-essentials"),
             ],
-            path: "Sources/ISO7816",
-            swiftSettings: [IS_APPLE]
+            path: "Sources/ISO7816"
         ),
         .testTarget(
             name: "TLVTests",

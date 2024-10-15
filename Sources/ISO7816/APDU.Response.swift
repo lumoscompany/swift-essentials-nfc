@@ -106,3 +106,28 @@ extension ISO7816.APDU.Response {
         self.init(rawValue: contiguousBytes.concreteBytes)
     }
 }
+
+public extension ISO7816.APDU.Response {
+    func checkError() throws (ISO7816.APDU.Error) {
+        guard !isWellKnownSuccess
+        else {
+            return
+        }
+
+        let wellKnownDescription = wellKnownDescription
+        if let wellKnownDescription, wellKnownDescription.level != .error {
+            return
+        }
+
+        throw .apduResponse(statusWord1, statusWord2, wellKnownDescription?.text)
+    }
+}
+
+public extension ISO7816.APDU.Response {
+    var isWellKnownSuccess: Bool {
+        switch (statusWord1, statusWord2) {
+        case (0x90, 0x00), (0x91, 0x00): true
+        default: false
+        }
+    }
+}

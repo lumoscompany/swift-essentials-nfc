@@ -13,6 +13,7 @@ public extension ISO7816.APDU {
         case bodyTooLarge
         case notEnoughResponseData
         case expectedResponseLengthOutOfBounds
+        case apduResponse(Byte, Byte, String?)
     }
 }
 
@@ -26,6 +27,11 @@ extension ISO7816.APDU.Error: LocalizedError {
         case .bodyTooLarge: "Body larger than 65535"
         case .notEnoughResponseData: "Not enough data to parse APDU response"
         case .expectedResponseLengthOutOfBounds: "Expected length of response is out of bounds (0, 65536)"
+        case let .apduResponse(
+            sw1,
+            sw2,
+            description
+        ): "APDU: [\(sw1.hexadecimalString)\(sw2.hexadecimalString)]: \(description ?? "")"
         }
     }
 }

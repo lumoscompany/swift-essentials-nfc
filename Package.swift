@@ -21,8 +21,8 @@ let package = Package(
             .upToNextMajor(from: "1.6.1")
         ),
         .package(
-            url: "https://github.com/lumoscompany/swift-essentials",
-            .upToNextMajor(from: "0.0.18")
+            url: "https://github.com/lumoscompany/swift-essentials.git",
+            .upToNextMajor(from: "0.0.22")
         ),
     ],
     targets: [

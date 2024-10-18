@@ -17,7 +17,7 @@ let package = Package(
     ],
     dependencies: [
         .package(
-            url: "https://github.com/apple/swift-log",
+            url: "https://github.com/apple/swift-log.git",
             .upToNextMajor(from: "1.6.1")
         ),
         .package(

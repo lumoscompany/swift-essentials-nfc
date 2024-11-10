@@ -1,0 +1,31 @@
+{
+  "configurations" : [
+    {
+      "id" : "F67FAE42-A935-42C9-B5A4-E924EFA69F93",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "NDEFTests",
+        "name" : "NDEFTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "TLVTests",
+        "name" : "TLVTests"
+      }
+    }
+  ],
+  "version" : 1
+}

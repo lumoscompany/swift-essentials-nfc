@@ -1,0 +1,24 @@
+{
+  "originHash" : "d6954ba880626c2c6916ca740444644adb3b13bee7f531d5541e0a174f9a746f",
+  "pins" : [
+    {
+      "identity" : "swift-essentials",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/unistash-io/swift-essentials.git",
+      "state" : {
+        "revision" : "112b87a4f7739e61e515c8eccf936d5952f60659",
+        "version" : "0.0.1"
+      }
+    },
+    {
+      "identity" : "swift-log",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-log.git",
+      "state" : {
+        "revision" : "9cb486020ebf03bfa5b5df985387a14a98744537",
+        "version" : "1.6.1"
+      }
+    }
+  ],
+  "version" : 3
+}
